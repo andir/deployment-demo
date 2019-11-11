@@ -7,17 +7,10 @@ nixosTest {
       serviceConfig.DynamicUser = true;
     };
     networking.firewall.allowedTCPPorts = [ 8080 ];
+    environment.systemPackages = [ pkgs.curl ];
   };
   nodes.client = { pkgs, ... }: {
-    services.xserver = {
-      enable = true;
-      displayManager.auto.enable = true;
-      windowManager.default = "icewm";
-      windowManager.icewm.enable = true;
-      desktopManager.default = "none";
-    };
-
-    environment.systemPackages = [ pkgs.firefox pkgs.xdotool ];
+    environment.systemPackages = [ pkgs.curl ];
   };
   testScript = ''
     $webserver->start;
@@ -25,14 +18,7 @@ nixosTest {
     $webserver->succeed('curl -q localhost:8080');
 
     $client->start;
-    $client->waitForX;
-    $client->execute("xterm -e 'firefox http://webserver:8080' &");
-    $client->waitForWindow("RevealJS");
-    $client->sleep(5);
-
-    $client->execute("xdotool key space");
-
-    $client->sleep(2);
-    $client->screenshot("screen");
+    $client->waitForUnit("multi-user.target");
+    $client->succeed('curl -v http://webserver:8080');
   '';
 }
