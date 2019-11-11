@@ -62,4 +62,8 @@ $ nix-build Cargo.toml -A rootCrate
 ```
 
 
+---
 
+# Installing Nix on MacOS Catalina:
+
+https://twitter.com/domenkozar/status/1193803696146173952
