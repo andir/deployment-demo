@@ -1,6 +1,8 @@
-{ pkgs ? import ./nix/nixpkgs.nix {} }:
+{ pkgs ? import ./nix/nixpkgs.nix { overlays = [ (import ./packages.nix) ]; } }:
 {
-  my_service = pkgs.callPackage ./my_service {};
-  slides = pkgs.callPackage ./slides {};
+  inherit (pkgs)
+    my_service
+    slides
+    ;
   tests = pkgs.callPackage ./tests.nix {};
 }
